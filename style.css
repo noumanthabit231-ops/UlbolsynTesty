@@ -447,6 +447,20 @@ h1 {
     }
 }
 
+/* Paradox Card */
+.paradox-card {
+    background: #f8fafc;
+    border-left: 4px solid var(--primary-color);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
+}
+
+.paradox-card h4 {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
 /* Стили для разделения страниц в PDF */
 .report-page {
     background: white;
