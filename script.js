@@ -1091,22 +1091,22 @@ class VProEngine {
                         // Инверсия для балла 1 - грамматически верные конструкции
                         const prefixes = lang === 'ru' ? 
                             [
-                                'Для вас не характерно то, что вы ', 
-                                'Вы не склонны к тому, чтобы ', 
-                                'Вам не близка позиция, при которой вы '
+                                'Для вас не характерно ', 
+                                'Вы не склонны ', 
+                                'Вам не близка позиция '
                             ] : 
                             [
-                                'Сіз үшін келесі жайт тән емес: сіз ', 
+                                'Сіз үшін келесі жайт тән емес: ', 
                                 'Сіз мынаған бейім емессіз: ', 
-                                'Сізге мына позиция жақын емес: сіз '
+                                'Сізге мына позиция жақын емес: '
                             ];
                         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
                         text = `${prefix}${rh.nuance.toLowerCase()}`;
                     } else {
                         // Динамичное начало для балла 2
                         const dynamicPrefix = lang === 'ru' ? 
-                            (Math.random() > 0.5 ? 'Вы отмечаете, что вам не совсем близко ' : 'Вы скорее дистанцируетесь от того, чтобы ') : 
-                            (Math.random() > 0.5 ? 'Сіз өзіңізге аса жақын емес екенін атап өтесіз: ' : 'Сіз мынадан алшақтауды жөн көресіз: ');
+                            (Math.random() > 0.5 ? 'Вы проявляете меньше интереса к тому, ' : 'Вам не совсем близко ') : 
+                            (Math.random() > 0.5 ? 'Сіз бұған азырақ қызығушылық танытасыз: ' : 'Сізге бұл онша жақын емес: ');
                         text = `${dynamicPrefix}${rh.nuance.toLowerCase()}`;
                     }
                 } else {
@@ -1114,9 +1114,18 @@ class VProEngine {
                     text = `${neutralPrefix}${rh.nuance.toLowerCase()}`;
                 }
                 
-                paragraph += conn + text + " ";
+                // Убеждаемся, что перед соединителем есть точка
+                if (!paragraph.trim().endsWith('.')) {
+                    paragraph = paragraph.trim() + '. ';
+                } else if (!paragraph.endsWith(' ')) {
+                    paragraph += ' ';
+                }
+                
+                paragraph += conn + text;
             });
             
+            // Финальная точка в конце абзаца
+            if (!paragraph.trim().endsWith('.')) paragraph = paragraph.trim() + '.';
             paragraph += `</p></div>`;
             story.push(paragraph);
         });
