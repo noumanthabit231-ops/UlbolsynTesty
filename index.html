@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Pro | Профориентация нового поколения</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo-group">
+                    <div class="logo">V-PRO</div>
+                    <div class="lang-switcher">
+                        <button id="lang-ru" class="lang-btn active">RU</button>
+                        <button id="lang-kz" class="lang-btn">KZ</button>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+                <div id="step-counter" class="step-counter">0%</div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <!-- Welcome Screen -->
+                <section id="screen-welcome" class="screen active">
+                    <h1 id="welcome-title">Твой вектор в будущее Казахстана</h1>
+                    <p id="welcome-subtitle" class="subtitle">Строго научный подход к выбору профессии для учеников 8–10 классов.</p>
+                    <div class="features">
+                        <div class="feature-item">
+                            <span class="icon">📊</span>
+                            <p id="feat-1">Математический анализ интересов</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="icon">🇰🇿</span>
+                            <p id="feat-2">Актуально для рынка РК 2026</p>
+                        </div>
+                        <div class="feature-item">
+                            <span class="icon">⚡</span>
+                            <p id="feat-3">15 минут до результата</p>
+                        </div>
+                    </div>
+                    <button id="start-btn" class="btn btn-primary">Начать диагностику</button>
+                </section>
+
+                <!-- Test Screen -->
+                <section id="screen-test" class="screen">
+                    <div class="question-card">
+                        <div class="card-header">
+                            <button id="back-btn" class="back-btn">←</button>
+                            <div id="question-text" class="question-text">Загрузка вопроса...</div>
+                        </div>
+                        <div id="options-container" class="options-grid">
+                            <!-- Options will be injected here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Result Screen -->
+                <section id="screen-result" class="screen">
+                    <div id="report-content" class="report-wrapper">
+                        <!-- Page 1: Summary -->
+                        <div class="report-page">
+                            <div class="verified-badge">
+                                <span>✓</span> Математически верифицировано
+                            </div>
+                            <h2 class="report-title">Твой профессиональный профиль</h2>
+                            
+                            <div class="summary-grid">
+                                <div id="result-visualization" class="result-chart">
+                                    <canvas id="radarChart"></canvas>
+                                </div>
+                                <div id="result-summary" class="result-info"></div>
+                            </div>
+                        </div>
+
+                        <!-- Page 2: Detailed Analysis -->
+                        <div class="report-page">
+                            <h2 id="analysis-title" class="report-title">Детальный анализ</h2>
+                            <div id="detailed-analysis" class="analysis-container"></div>
+                        </div>
+
+                        <!-- Page 3: Recommendations -->
+                        <div class="report-page">
+                            <h2 id="recommendations-title" class="report-title">Рекомендации</h2>
+                            <div id="recommendations-content" class="recommendations-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="actions no-print">
+                        <button id="restart-btn" class="btn btn-secondary">Пройти заново</button>
+                        <button id="download-btn" class="btn btn-primary">Скачать PDF-отчет</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 V-Pro Kazakhstan. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
