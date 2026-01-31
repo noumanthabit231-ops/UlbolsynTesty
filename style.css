@@ -420,18 +420,23 @@ h1 {
     margin-bottom: 32px;
 }
 
-.full-report-text h3 {
-    color: var(--primary-color);
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-    font-weight: 700;
-}
-
 .full-report-text p {
     text-align: justify;
     line-height: 1.7;
     color: var(--text-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px;
+}
+
+.story-subtitle {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
 }
 
 .full-report-text strong, 
@@ -443,7 +448,7 @@ h1 {
 @media print {
     .full-report-text p {
         line-height: 1.5;
-        margin-bottom: 1rem;
+        margin-bottom: 16px;
     }
 }
 
