@@ -362,19 +362,21 @@ const App = {
     },
 
     cacheDOM() {
-        this.ui = {
+        this.screens = {
             welcome: document.getElementById('screen-welcome'),
             test: document.getElementById('screen-test'),
-            result: document.getElementById('screen-result'),
+            result: document.getElementById('screen-result')
+        };
+        this.ui = {
             progressBar: document.getElementById('progress-bar'),
+            stepCounter: document.getElementById('step-counter'),
             questionText: document.getElementById('question-text'),
-            optionsContainer: document.getElementById('options-container'),
+            options: document.getElementById('options-container'),
             reportSummary: document.getElementById('result-summary'),
             detailedAnalysis: document.getElementById('detailed-analysis'),
             recommendations: document.getElementById('recommendations-content'),
             radarCanvas: document.getElementById('radarChart')
         };
-        this.screens = this.ui;
         this.btns = {
             start: document.getElementById('start-btn'),
             restart: document.getElementById('restart-btn'),
