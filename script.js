@@ -601,5 +601,3 @@ const App = {
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());
-/ /   t e s t  
- 
