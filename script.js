@@ -751,12 +751,17 @@ const App = {
     download() {
         const el = document.getElementById('report-content');
         const opt = {
-            margin: 10,
-            filename: `V-Pro_Full_Report_${this.lang.toUpperCase()}.pdf`,
+            margin: 0, 
+            filename: `V-Pro_Report_${this.lang.toUpperCase()}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false,
+                letterRendering: true
+            },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            pagebreak: { mode: ['css', 'legacy'] }
         };
 
         html2pdf().set(opt).from(el).save();

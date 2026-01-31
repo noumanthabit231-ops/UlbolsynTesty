@@ -415,20 +415,37 @@ h1 {
     font-weight: 600;
 }
 
-.page-break {
-    page-break-after: always;
-    break-after: page;
+/* Стили для разделения страниц в PDF */
+.report-page {
+    background: white;
 }
 
 @media print {
     .no-print { display: none !important; }
-    body { background: white; padding: 0; }
-    .container { width: 100%; max-width: none; padding: 0; }
-    .card { box-shadow: none; border: none; padding: 0; }
-    .report-page { 
-        padding: 20px 0;
-        min-height: 297mm; /* A4 height */
+    body { background: white; padding: 0; margin: 0; }
+    .container { width: 100%; max-width: none; padding: 0; margin: 0; }
+    .card { box-shadow: none; border: none; padding: 0; margin: 0; }
+    
+    .report-page {
+        padding: 20mm; /* Внутренние отступы для печати */
+        min-height: 296mm; /* Чуть меньше A4 для предотвращения пустых листов */
+        box-sizing: border-box;
+        page-break-after: always;
+        break-after: page;
+        background: white !important;
     }
+
+    /* Принудительный разрыв для последнего листа не нужен, но для 1 и 2 обязателен */
+    .report-page:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+}
+
+/* Принудительный разрыв для html2pdf */
+.page-break {
+    display: block;
+    clear: both;
 }
 
 .mt-4 { margin-top: 32px; }
@@ -495,6 +512,101 @@ h1 {
 .status-4 { background: #e0f2fe; color: #0369a1; }
 .status-3 { background: #f1f5f9; color: #475569; }
 .status-2, .status-1 { background: #fee2e2; color: #991b1b; }
+
+/* Report Summary Styles */
+.result-profile {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.profile-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.profile-type {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-top: 8px;
+}
+
+.superpower-highlight {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #bfdbfe;
+    margin-top: 32px;
+}
+
+.superpower-highlight h4 {
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+}
+
+.superpower-highlight p {
+    color: #1e40af;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Education Map Styles */
+.edu-card {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.edu-card h4 {
+    color: #0369a1;
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+}
+
+.edu-unis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.uni-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #bae6fd;
+}
+
+.edu-details {
+    border-top: 1px solid #bae6fd;
+    padding-top: 16px;
+}
+
+.edu-detail-item strong {
+    display: block;
+    color: #0369a1;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.subjects-badge {
+    display: inline-block;
+    background: #0369a1;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-top: 4px;
+}
 
 /* Education Details */
 .edu-detail-item strong {
