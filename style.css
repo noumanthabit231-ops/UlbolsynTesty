@@ -418,24 +418,26 @@ h1 {
 /* Стили для разделения страниц в PDF */
 .report-page {
     background: white;
+    position: relative;
 }
 
 @media print {
     .no-print { display: none !important; }
-    body { background: white; padding: 0; margin: 0; }
+    body { background: white; padding: 0; margin: 0; -webkit-print-color-adjust: exact; }
     .container { width: 100%; max-width: none; padding: 0; margin: 0; }
-    .card { box-shadow: none; border: none; padding: 0; margin: 0; }
     
     .report-page {
-        padding: 20mm; /* Внутренние отступы для печати */
-        min-height: 296mm; /* Чуть меньше A4 для предотвращения пустых листов */
+        padding: 15mm 20mm;
+        min-height: 297mm; /* Высота A4 */
         box-sizing: border-box;
         page-break-after: always;
         break-after: page;
         background: white !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
     }
 
-    /* Принудительный разрыв для последнего листа не нужен, но для 1 и 2 обязателен */
     .report-page:last-child {
         page-break-after: auto;
         break-after: auto;
@@ -444,8 +446,19 @@ h1 {
 
 /* Принудительный разрыв для html2pdf */
 .page-break {
+    page-break-before: always;
+    break-before: page;
+}
+
+/* Стили для PDF выгрузки (html2pdf) */
+.html2pdf__page-break {
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
     display: block;
-    clear: both;
+    page-break-before: always;
 }
 
 .mt-4 { margin-top: 32px; }

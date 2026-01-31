@@ -18,6 +18,8 @@ const TRANSLATIONS = {
             "Полностью согласен"
         ],
         resultTitle: "Твой профессиональный профиль",
+        page2Title: "Психологический портрет и уникальные черты",
+        page3Title: "Карта образования и ЕНТ",
         blockNames: {
             'B1': 'Ценности',
             'B2': 'Мотивация',
@@ -101,6 +103,8 @@ const TRANSLATIONS = {
             "Толық келісемін"
         ],
         resultTitle: "Сенің кәсіби профилің",
+        page2Title: "Психологиялық портрет және бірегей қасиеттер",
+        page3Title: "Білім картасы және ҰБТ",
         blockNames: {
             'B1': 'Құндылықтар',
             'B2': 'Мотивация',
@@ -1223,7 +1227,8 @@ const App = {
             individualHighlights: document.getElementById('individual-highlights'),
             educationMap: document.getElementById('education-map'),
             recommendations: document.getElementById('recommendations-content'),
-            radarCanvas: document.getElementById('radarChart')
+            radarCanvas: document.getElementById('radarChart'),
+            reportTitles: document.querySelectorAll('.report-title')
         };
         this.btns = {
             start: document.getElementById('start-btn'),
@@ -1334,8 +1339,15 @@ const App = {
 
     renderRes(res) {
         const t = TRANSLATIONS[this.lang];
-        const r = t.report;
+        const r = RULES[this.lang];
         
+        // Обновление заголовков отчета
+        if (this.ui.reportTitles.length >= 3) {
+            this.ui.reportTitles[0].textContent = t.resultTitle;
+            this.ui.reportTitles[1].textContent = t.page2Title;
+            this.ui.reportTitles[2].textContent = t.page3Title;
+        }
+
         // 1. Сводка (Page 1)
         this.ui.reportSummary.innerHTML = `
             <div class="result-profile">
@@ -1484,8 +1496,15 @@ const App = {
         });
     },
 
-    download() {
+    async download() {
         const el = document.getElementById('report-content');
+        const btn = this.btns.download;
+        const originalText = btn.textContent;
+        
+        // Визуальная обратная связь
+        btn.disabled = true;
+        btn.textContent = this.lang === 'ru' ? 'Генерация PDF...' : 'PDF дайындалуда...';
+
         const opt = {
             margin: 0, 
             filename: `V-Pro_Report_${this.lang.toUpperCase()}.pdf`,
@@ -1494,13 +1513,22 @@ const App = {
                 scale: 2, 
                 useCORS: true, 
                 logging: false,
-                letterRendering: true
+                letterRendering: true,
+                windowWidth: 1200 // Фиксированная ширина для корректного рендеринга
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['css', 'legacy'] }
         };
 
-        html2pdf().set(opt).from(el).save();
+        try {
+            await html2pdf().set(opt).from(el).save();
+        } catch (err) {
+            console.error('PDF Generation Error:', err);
+            alert(this.lang === 'ru' ? 'Ошибка при создании PDF' : 'PDF жасау кезінде қате кетті');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
     }
 };
 
