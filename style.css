@@ -415,6 +415,38 @@ h1 {
     font-weight: 600;
 }
 
+/* Full Report Text Styles */
+.full-report-text {
+    margin-bottom: 32px;
+}
+
+.full-report-text h3 {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.full-report-text p {
+    text-align: justify;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.full-report-text strong, 
+.full-report-text b {
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+@media print {
+    .full-report-text p {
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+}
+
 /* Стили для разделения страниц в PDF */
 .report-page {
     background: white;
