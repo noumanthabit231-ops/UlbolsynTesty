@@ -245,6 +245,83 @@ const QUESTIONS_DATA = [
     { id: 60, block: 'B6', ru: "Влиятельный (Харизма/Лидер).", kz: "Ықпал етуші (Харизма/Лидер)." }
 ];
 
+const EDUCATION_MAP = {
+    ru: {
+        'B1B2': {
+            unis: ["IITU (Алматы)", "NU (Астана)", "AlmaU (Алматы)"],
+            faculty: "Менеджмент и социальное предпринимательство",
+            subjects: "География + Математика"
+        },
+        'B2B3': {
+            unis: ["KBTU (Алматы)", "IITU (Алматы)", "AITU (Астана)"],
+            faculty: "Информационные технологии / Big Data",
+            subjects: "Математика + Физика"
+        },
+        'B3B4': {
+            unis: ["KIMEP (Алматы)", "Narxoz (Алматы)", "KazGUU (Астана)"],
+            faculty: "Бизнес-администрирование / Маркетинг",
+            subjects: "Математика + География"
+        },
+        'B4B5': {
+            unis: ["ENU (Астана)", "KazNU (Алматы)", "SDU (Каскелен)"],
+            faculty: "Международное право / Аналитика",
+            subjects: "Всемирная история + Иностранный язык"
+        },
+        'B5B6': {
+            unis: ["Satbayev University (Алматы)", "NU (Астана)", "AITU (Астана)"],
+            faculty: "Робототехника / Искусственный интеллект",
+            subjects: "Математика + Физика"
+        },
+        'B6B1': {
+            unis: ["KazNPU (Алматы)", "ENU (Астана)", "Suleyman Demirel University"],
+            faculty: "Психология / Педагогика / Филология",
+            subjects: "Язык + Литература"
+        },
+        'fallback': {
+            unis: ["Многопрофильные ВУЗы (KazNU, ENU)"],
+            faculty: "Общеобразовательные программы",
+            subjects: "Определяются по выбору"
+        }
+    },
+    kz: {
+        'B1B2': {
+            unis: ["IITU (Алматы)", "NU (Астана)", "AlmaU (Алматы)"],
+            faculty: "Менеджмент және әлеуметтік кәсіпкерлік",
+            subjects: "География + Математика"
+        },
+        'B2B3': {
+            unis: ["KBTU (Алматы)", "IITU (Алматы)", "AITU (Астана)"],
+            faculty: "Ақпараттық технологиялар / Big Data",
+            subjects: "Математика + Физика"
+        },
+        'B3B4': {
+            unis: ["KIMEP (Алматы)", "Narxoz (Алматы)", "KazGUU (Астана)"],
+            faculty: "Бизнес-әкімшілік / Маркетинг",
+            subjects: "Математика + География"
+        },
+        'B4B5': {
+            unis: ["ENU (Астана)", "KazNU (Алматы)", "SDU (Қаскелең)"],
+            faculty: "Халықаралық құқық / Аналитика",
+            subjects: "Дүниежүзі тарихы + Шет тілі"
+        },
+        'B5B6': {
+            unis: ["Satbayev University (Алматы)", "NU (Астана)", "AITU (Астана)"],
+            faculty: "Робототехника / Жасанды интеллект",
+            subjects: "Математика + Физика"
+        },
+        'B6B1': {
+            unis: ["KazNPU (Алматы)", "ENU (Астана)", "Suleyman Demirel University"],
+            faculty: "Психология / Педагогика / Филология",
+            subjects: "Тіл + Әдебиет"
+        },
+        'fallback': {
+            unis: ["Көпсалалы ЖОО (KazNU, ENU)"],
+            faculty: "Жалпы білім беру бағдарламалары",
+            subjects: "Таңдау бойынша анықталады"
+        }
+    }
+};
+
 class VProEngine {
     constructor(rawAnswers, lang = 'ru') {
         this.raw = rawAnswers;
@@ -252,9 +329,12 @@ class VProEngine {
         this.results = {
             block_scores: {},
             superpower_score: 0,
+            superpower_desc: "",
             microtalents: {},
+            individual_highlights: [],
             cross_check_flags: [],
-            profile_type: ""
+            profile_type: "",
+            education: null
         };
     }
 
@@ -275,9 +355,21 @@ class VProEngine {
             };
         });
         
+        // Анализ пиков (value === 5)
+        this.results.individual_highlights = this.raw
+            .filter(a => a.value === 5)
+            .map(a => {
+                const q = QUESTIONS_DATA.find(q => q.id === a.id);
+                return q[this.lang];
+            });
+
         const b6Norm = this.results.block_scores['B6'].norm;
         this.results.superpower_score = Math.min(100, Math.round(b6Norm * 1.5));
         
+        // Заполнение superpower_desc
+        const b6Interp = TRANSLATIONS[this.lang].report.interpretations.B6;
+        this.results.superpower_desc = b6Norm > 50 ? b6Interp.high : b6Interp.low;
+
         for (let qId = 51; qId <= 60; qId++) {
             const answer = this.raw.find(a => a.id === qId);
             const val = answer ? answer.value : 0;
@@ -289,6 +381,7 @@ class VProEngine {
         
         this.runCrossCheck();
         this.determineProfileType();
+        this.results.education = this.getEducationPath();
         return this.results;
     }
 
@@ -317,13 +410,27 @@ class VProEngine {
         });
     }
 
+    getEducationPath() {
+        const sorted = Object.entries(this.results.block_scores).sort((a, b) => b[1].norm - a[1].norm);
+        const top1 = sorted[0][0];
+        const top2 = sorted[1][0];
+        const key = top1 + top2;
+        const revKey = top2 + top1;
+        
+        return EDUCATION_MAP[this.lang][key] || EDUCATION_MAP[this.lang][revKey] || EDUCATION_MAP[this.lang].fallback;
+    }
+
     determineProfileType() {
         const sorted = Object.entries(this.results.block_scores).sort((a, b) => b[1].norm - a[1].norm);
-        const bNames = TRANSLATIONS[this.lang].blockNames;
         const top1 = sorted[0][0];
         const top2 = sorted[1][0];
         
-        // Более сложное определение типа на основе топ-2 блоков
+        // Проверка на "Нулевой" профиль
+        if (this.results.block_scores[top1].norm < 20) {
+            this.results.profile_type = this.lang === 'ru' ? "В поиске ориентиров" : "Бағыт іздеу үстінде";
+            return;
+        }
+
         const profiles = {
             ru: {
                 'B1B2': "Социальный Лидер",
@@ -374,6 +481,8 @@ const App = {
             options: document.getElementById('options-container'),
             reportSummary: document.getElementById('result-summary'),
             detailedAnalysis: document.getElementById('detailed-analysis'),
+            individualHighlights: document.getElementById('individual-highlights'),
+            educationMap: document.getElementById('education-map'),
             recommendations: document.getElementById('recommendations-content'),
             radarCanvas: document.getElementById('radarChart')
         };
@@ -517,7 +626,35 @@ const App = {
             this.ui.detailedAnalysis.appendChild(card);
         });
 
-        // 3. Рекомендации
+        // 3. Пиковые ответы (Сильные стороны)
+        if (res.individual_highlights.length > 0) {
+            this.ui.individualHighlights.innerHTML = `
+                <h4>🌟 ${this.lang === 'ru' ? 'Твои уникальные черты' : 'Сенің бірегей қасиеттерің'}</h4>
+                <div class="highlights-list">
+                    ${res.individual_highlights.map(h => `<div class="highlight-tag">${h}</div>`).join('')}
+                </div>
+            `;
+        }
+
+        // 4. Карта образования
+        const edu = res.education;
+        this.ui.educationMap.innerHTML = `
+            <div class="edu-card">
+                <h4>🎓 ${this.lang === 'ru' ? 'Рекомендуемые ВУЗы' : 'Ұсынылатын ЖОО'}</h4>
+                <div class="edu-unis">
+                    ${edu.unis.map(u => `<span class="uni-badge">${u}</span>`).join('')}
+                </div>
+                <div class="mt-4">
+                    <strong>${this.lang === 'ru' ? 'Факультет' : 'Факультет'}:</strong> ${edu.faculty}
+                </div>
+                <div class="mt-4">
+                    <strong>📚 ${this.lang === 'ru' ? 'Предметы ЕНТ' : 'ҰБТ пәндері'}:</strong> 
+                    <span class="subjects-badge">${edu.subjects}</span>
+                </div>
+            </div>
+        `;
+
+        // 5. Рекомендации
         const sorted = Object.entries(res.block_scores).sort((a, b) => b[1].norm - a[1].norm);
         const top1 = sorted[0][0];
         const top2 = sorted[1][0];
